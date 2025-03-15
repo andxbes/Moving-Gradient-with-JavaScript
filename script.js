@@ -8,9 +8,36 @@ const COLORS = [
     { r: 54, g: 233, b: 84 },//green
 ];
 
+const COMPOSITE_OPERATIONS = [
+    'source-over',
+    'saturation',
+    'source-in',
+    'source-out',
+    'source-atop',
+    'destination-over',
+    'lighter',
+    'copy',
+    'xor',
+    'multiply',
+    'screen',
+    'overlay',
+    'darken',
+    'lighten',
+    'color-dodge',
+    'color-burn',
+    'hard-light',
+    'difference',
+    'exclusion',
+    'hue',
+    'soft-light',
+    'color',
+    'luminosity'
+];
+
 
 class App {
     constructor() {
+        this.effect = 0;
         this.canvas = document.createElement('canvas');
         document.body.appendChild(this.canvas);
         this.ctx = this.canvas.getContext('2d');
@@ -22,11 +49,31 @@ class App {
         this.maxRadius = 900;
         this.minRadius = 400;
 
+        this.effectElement = document.getElementById('effect');
+
         window.addEventListener('resize', this.resize.bind(this), false);
+        window.addEventListener('click', this.click.bind(this), false);
         this.resize();
 
         window.requestAnimationFrame(this.animate.bind(this));
     }
+
+    click() {
+        if (this.effect++ >= COMPOSITE_OPERATIONS.length) {
+            this.effect = 0;
+        }
+        const effect = COMPOSITE_OPERATIONS[this.effect];
+        this.setCompositeOperation(effect);
+    }
+
+    setCompositeOperation(effect) {
+        this.ctx.globalCompositeOperation = effect;
+
+        if (this.effectElement) {
+            this.effectElement.innerText = effect;
+        }
+    }
+
 
     resize() {
         this.stageWidth = document.body.clientWidth;
@@ -35,6 +82,8 @@ class App {
         this.canvas.width = this.stageWidth * this.pixelRatio;
         this.canvas.height = this.stageHeight * this.pixelRatio;
         this.ctx.scale(this.pixelRatio, this.pixelRatio);
+
+        this.setCompositeOperation(COMPOSITE_OPERATIONS[this.effect]);
 
         this.createParticles();
     }
