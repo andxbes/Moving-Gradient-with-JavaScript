@@ -59,7 +59,7 @@ class App {
     }
 
     click() {
-        if (this.effect++ >= COMPOSITE_OPERATIONS.length) {
+        if (++this.effect >= COMPOSITE_OPERATIONS.length) {
             this.effect = 0;
         }
         const effect = COMPOSITE_OPERATIONS[this.effect];
